@@ -13,7 +13,8 @@ class server():
     def get_message(self, clientsocket):
         while True:
             data = clientsocket.recv(1024).decode()
-            clientsocket.sendto(data.encode(), (socket.gethostname(), 8980))
+            msg = 'server: ' + data
+            clientsocket.sendto(msg.encode(), (socket.gethostname(), 8980))
             # data = self.clientsocket.recv(1024).decode()
             # self.clientsocket.sendto(data.encode(), (socket.gethostname(), 8980))
 
@@ -39,10 +40,11 @@ class server():
             self.serversocket.close()
 
     def accept(self):
-        (self.clientsocket, connection) = self.serversocket.accept()
-        print("{} has connected".format(connection))
-        t1 = threading.Thread(target=self.get_message, kwargs={'clientsocket': self.clientsocket})
-        t1.run()
+        while True:
+            (self.clientsocket, connection) = self.serversocket.accept()
+            print("{} has connected".format(connection))
+            self.threads.append(threading.Thread(target=self.get_message, kwargs={'clientsocket': self.clientsocket}))
+            self.threads[-1].start()
 
 
 ok = server()
