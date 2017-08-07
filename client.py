@@ -10,7 +10,7 @@ class client():
     def create_socket(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-    def connect(self, host=socket.gethostname(), port=2930):
+    def connect(self, host=socket.gethostname(), port=4444):
         if host is None:
             self.sock.connect((host, port))
         else:
@@ -19,13 +19,13 @@ class client():
     def listen(self):
         while True:
             data = self.sock.recv(1024).decode()
-            msg = "server: " + data
+            msg = "\rserver: " + data
             print(msg)
 
     def send(self):
         while True:
             msg = input("you: ")
-            self.sock.sendto(msg.encode(), (socket.gethostname(), 2930))
+            self.sock.sendto(msg.encode(), (socket.gethostname(), 4444))
 
     def handle_threads(self):
         listenThread = threading.Thread(target=self.listen)
@@ -34,7 +34,12 @@ class client():
         speakThread.start()
 
 
-ok = client()
-ok.create_socket()
-ok.connect()
-ok.handle_threads()
+def runClient():
+    clnt = client()
+    clnt.create_socket()
+    clnt.connect()
+    clnt.handle_threads()
+
+
+if __name__ == "__main__":
+    pass

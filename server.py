@@ -10,14 +10,17 @@ class server():
         self.threads = []
         self.clientsockets = []
 
+
     def get_message(self, clientsocket):
         while True:
             data = clientsocket.recv(1024).decode()
-            #msg = 'server: ' + data
             msg = data
-            for x in self.clientsockets:
-                if x != self.clientsocket:
-                    x.sendto(msg.encode(), (socket.gethostname(), 2930))
+            self.sendAllClients(clientsocket, msg)
+
+    def sendAllClients(self, clientsocket, msg):
+        for x in self.clientsockets:
+            if x != clientsocket:
+                x.sendto(msg.encode(), (socket.gethostname(), 4444))
 
     def create_socket(self):
         try:
@@ -26,7 +29,7 @@ class server():
             print("socket error: create")
             self.serversocket.close()
 
-    def bind_socket(self, host=socket.gethostname(), port=2930):
+    def bind_socket(self, host=socket.gethostname(), port=4444):
         try:
             self.serversocket.bind((host, port))
         except socket.error:
@@ -49,9 +52,12 @@ class server():
             self.threads[-1].start()
 
 
-ok = server()
-ok.create_socket()
-ok.bind_socket()
-ok.listen()
-ok.accept()
-# (clientsocket, address) = serversocket.accept()
+def runServer():
+    serv = server()
+    serv.create_socket()
+    serv.bind_socket()
+    serv.listen()
+    serv.accept()
+
+    if __name__ == "__main__":
+        pass
